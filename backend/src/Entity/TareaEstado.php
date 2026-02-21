@@ -16,6 +16,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\State\SoftDeleteProcessor;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: TareaEstadoRepository::class)]
 #[ApiResource(
@@ -35,9 +36,11 @@ class TareaEstado
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['tarea:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['tarea:read'])]
     private ?string $nombre = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -47,6 +50,7 @@ class TareaEstado
     private ?int $orden = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['tarea:read'])]
     private ?string $color = null;
 
     #[ORM\Column]

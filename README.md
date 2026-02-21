@@ -162,3 +162,47 @@ Con el token brindado, cualquier cliente deberá añadir este Token a la cabecer
 
 # Documentación: Creación de Aplicación FRONTEND
 
+Para realizar el frontend se utilizara Vite con React y TailwindCSS. Tambien implemento axios con Auth.js para el manejo de tokens.
+
+```bash
+npx -y create-vite@latest frontend --template react
+```
+
+ahora la instalacion de los paquetes que instale:
+
+```bash
+npm install -D tailwindcss
+npm install -D postcss
+npm install -D autoprefixer
+npx tailwindcss init -p
+npm install primereact
+npm install primeicons
+npm install axios
+npm install @auth/core
+npm install react-router-dom
+npm install zustand
+npm install jsonwebtoken
+```
+
+## 6. Mejoras que hice en el funcionamiento (Frontend y Seguridad)
+
+Para que la página no solo se vea bien, sino que sea segura y fácil de usar, le metí mano a varias cosas importantes:
+
+### 6.1 Registro de tareas más sencillo
+Diseñé la parte de las tareas para que fuera muy práctica. Lo que hice fue:
+- **Asignación automática**: Para que el usuario no tenga que estar buscándose en una lista cada vez que crea una tarea, el sistema ya sabe quién es y se la asigna solito.
+- **Ver lo que hacen los demás**: Puse un filtro para que puedas ver qué tareas han registrado tus compañeros en el proyecto, así todos saben en qué anda el equipo.
+- **Solo tú mandas en lo tuyo**: Hice que el botón de editar solo aparezca en las tareas que tú mismo creaste. Así nadie más puede cambiar tus horas o tus descripciones por error.
+
+### 6.2 Cuentas seguras (Hasheo de contraseñas)
+Me aseguré de que las contraseñas nunca viajen ni se guarden como texto normal:
+- Cuando alguien crea un usuario o cambia su clave, el sistema la "disfraza" (hashea) automáticamente antes de guardarla en la base de datos. Así, aunque alguien entrara a mirar la tabla de usuarios, no podría ver las contraseñas reales.
+
+### 6.3 Cómo organicé las llamadas y los datos (Axios y Zustand)
+Para que el código no fuera un desorden y las cosas cargaran rápido:
+- **Llamadas inteligentes con Axios**: Creé un archivo central para todas las conexiones. Le puse una regla para que le "pegue" el permiso de seguridad (el token) a cada consulta que hagamos. Así me ahorro escribir el código de seguridad en cada botón o página.
+- **Memoria del usuario con Zustand**: Usé Zustand para guardar los datos del usuario logueado. Es como una pequeña memoria que le dice a toda la página quién eres, para que me salude por mi nombre en el menú y sepa qué tareas mostrarme sin tener que preguntarle al servidor a cada rato.
+
+### 6.4 Detalles visuales premium
+- Usé **PrimeReact** para que las tablas se vean profesionales, con botones elegantes y colores que cambian según el estado de la tarea (si está pendiente, en proceso o terminada). 
+- También arreglé el formato de las fechas para que se vean claras y fáciles de leer, con el día y la hora exacta de la última actualización.

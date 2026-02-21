@@ -3,5 +3,7 @@ api_platform:
     version: 1.0.0
     defaults:
         stateless: true
+        formats: ['json']
+        patch_formats: ['json']
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']

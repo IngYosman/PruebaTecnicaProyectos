@@ -19,18 +19,25 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\State\SoftDeleteProcessor;
+use Symfony\Component\Serializer\Attribute\Groups;
+
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 
 #[ORM\Entity(repositoryClass: UsuarioRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ApiFilter(SearchFilter::class, properties: ['email' => 'exact'])]
 #[ApiResource(
     operations: [
-        new GetCollection(),
-        new Post(),
-        new Get(),
-        new Put(),
-        new Patch(),
+        new GetCollection(normalizationContext: ['groups' => ['user:read']]),
+        new Post(denormalizationContext: ['groups' => ['user:create']]),
+        new Get(normalizationContext: ['groups' => ['user:read']]),
+        new Put(denormalizationContext: ['groups' => ['user:update']]),
+        new Patch(denormalizationContext: ['groups' => ['user:update']]),
         new Delete(processor: SoftDeleteProcessor::class)
-    ]
+    ],
+    normalizationContext: ['groups' => ['user:read']],
+    denormalizationContext: ['groups' => ['user:create', 'user:update']]
 )]
 class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -42,15 +49,18 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['user:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Groups(['user:read', 'user:create', 'user:update'])]
     private ?string $email = null;
 
     /**
      * @var list<string> The user roles
      */
     #[ORM\Column]
+    #[Groups(['user:read', 'user:create', 'user:update'])]
     private array $roles = [];
 
     /**
@@ -59,10 +69,15 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[Groups(['user:create', 'user:update'])]
+    private ?string $plainPassword = null;
+
     #[ORM\Column(length: 255)]
+    #[Groups(['user:read', 'user:create', 'user:update', 'tarea:read'])]
     private ?string $nombre = null;
 
     #[ORM\Column]
+    #[Groups(['user:read', 'user:create', 'user:update'])]
     private ?bool $estado = null;
 
     /**
@@ -144,6 +159,17 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->password = $password;
 
+        return $this;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
         return $this;
     }
 

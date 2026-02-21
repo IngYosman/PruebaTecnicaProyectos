@@ -19,13 +19,22 @@ class EntityAuditSubscriber
     {
         $entity = $args->getObject();
         $user = $this->security->getUser();
+        $now = new \DateTimeImmutable();
 
         if (method_exists($entity, 'setCreatedAt')) {
-            $entity->setCreatedAt(new \DateTimeImmutable());
+            $entity->setCreatedAt($now);
+        }
+
+        if (method_exists($entity, 'setUpdatedAt')) {
+            $entity->setUpdatedAt($now);
         }
 
         if (method_exists($entity, 'setCreatedBy') && $user) {
             $entity->setCreatedBy($user);
+        }
+
+        if (method_exists($entity, 'setUpdatedBy') && $user) {
+            $entity->setUpdatedBy($user);
         }
     }
 

@@ -16,16 +16,33 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\State\SoftDeleteProcessor;
 
+use Symfony\Component\Serializer\Attribute\Groups;
+
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+
 #[ORM\Entity(repositoryClass: TareaRepository::class)]
+#[ApiFilter(SearchFilter::class, properties: ['proyecto' => 'exact', 'usuario' => 'exact'])]
 #[ApiResource(
     operations: [
-        new GetCollection(),
-        new Post(),
-        new Get(),
-        new Put(),
-        new Patch(),
+        new GetCollection(normalizationContext: ['groups' => ['tarea:read', 'timestamp:read']]),
+        new Post(
+            normalizationContext: ['groups' => ['tarea:read', 'timestamp:read']],
+            denormalizationContext: ['groups' => ['tarea:write']]
+        ),
+        new Get(normalizationContext: ['groups' => ['tarea:read', 'timestamp:read']]),
+        new Put(
+            normalizationContext: ['groups' => ['tarea:read', 'timestamp:read']],
+            denormalizationContext: ['groups' => ['tarea:write']]
+        ),
+        new Patch(
+            normalizationContext: ['groups' => ['tarea:read', 'timestamp:read']],
+            denormalizationContext: ['groups' => ['tarea:write']]
+        ),
         new Delete(processor: SoftDeleteProcessor::class)
-    ]
+    ],
+    normalizationContext: ['groups' => ['tarea:read', 'timestamp:read']],
+    denormalizationContext: ['groups' => ['tarea:write']]
 )]
 class Tarea
 {
@@ -35,27 +52,34 @@ class Tarea
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['tarea:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'tareas')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['tarea:read', 'tarea:write'])]
     private ?Proyecto $proyecto = null;
 
     #[ORM\ManyToOne(inversedBy: 'tareas')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['tarea:read', 'tarea:write'])]
     private ?Usuario $usuario = null;
 
     #[ORM\ManyToOne(inversedBy: 'tareas')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['tarea:read', 'tarea:write'])]
     private ?TareaEstado $estado = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['tarea:read', 'tarea:write'])]
     private ?string $titulo = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['tarea:read', 'tarea:write'])]
     private ?string $descripcion = null;
 
     #[ORM\Column]
+    #[Groups(['tarea:read', 'tarea:write'])]
     private ?int $horasTrabajadas = null;
 
     public function getId(): ?int
