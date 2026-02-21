@@ -1,0 +1,310 @@
+{
+    "info": {
+        "_postman_id": "8b9a1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d",
+        "name": "Prueba Técnica Proyectos API - Completa",
+        "description": "Colección completa para probar todas las APIs del sistema incluyendo Usuarios, Proyectos, Tareas, Estados, Tarifas y Asignaciones.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "01 Auth",
+            "item": [
+                {
+                    "name": "Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.token) {",
+                                    "    pm.collectionVariables.set(\"token\", jsonData.token);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"admin@ejemplo.com\",\n    \"password\": \"admin123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/login_check",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "login_check"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "02 Usuarios",
+            "item": [
+                {
+                    "name": "Listar",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/usuarios"
+                    }
+                },
+                {
+                    "name": "Crear",
+                    "request": {
+                        "method": "POST",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"user@ejemplo.com\",\n    \"nombre\": \"Juan Perez\",\n    \"plainPassword\": \"pass123\",\n    \"roles\": [\"ROLE_USER\"],\n    \"estado\": true\n}"
+                        },
+                        "url": "{{baseUrl}}/api/usuarios"
+                    }
+                },
+                {
+                    "name": "Ver Detalle",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/usuarios/1"
+                    }
+                },
+                {
+                    "name": "Actualizar",
+                    "request": {
+                        "method": "PUT",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"nombre\": \"Juan Perez Modificado\",\n    \"estado\": true\n}"
+                        },
+                        "url": "{{baseUrl}}/api/usuarios/1"
+                    }
+                },
+                {
+                    "name": "Borrar Lógico",
+                    "request": {
+                        "method": "DELETE",
+                        "url": "{{baseUrl}}/api/usuarios/1"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "03 Proyectos",
+            "item": [
+                {
+                    "name": "Listar",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/proyectos"
+                    }
+                },
+                {
+                    "name": "Crear",
+                    "request": {
+                        "method": "POST",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"nombre\": \"Proyecto Nuevo\",\n    \"descripcion\": \"Descripción del proyecto\",\n    \"fechaInicio\": \"2024-01-01\",\n    \"fechaFin\": \"2024-12-31\",\n    \"estado\": true\n}"
+                        },
+                        "url": "{{baseUrl}}/api/proyectos"
+                    }
+                },
+                {
+                    "name": "Ver Detalle",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/proyectos/1"
+                    }
+                },
+                {
+                    "name": "Actualizar",
+                    "request": {
+                        "method": "PUT",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"nombre\": \"Nombre Modificado\"\n}"
+                        },
+                        "url": "{{baseUrl}}/api/proyectos/1"
+                    }
+                },
+                {
+                    "name": "Borrar Lógico",
+                    "request": {
+                        "method": "DELETE",
+                        "url": "{{baseUrl}}/api/proyectos/1"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "04 Tareas",
+            "item": [
+                {
+                    "name": "Listar Todas",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/tareas"
+                    }
+                },
+                {
+                    "name": "Filtrar por Proyecto",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/tareas?proyecto=1"
+                    }
+                },
+                {
+                    "name": "Filtrar por Usuario",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/tareas?usuario=1"
+                    }
+                },
+                {
+                    "name": "Crear Tarea",
+                    "request": {
+                        "method": "POST",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"titulo\": \"Tarea Postman\",\n    \"descripcion\": \"Prueba\",\n    \"proyecto\": \"/api/proyectos/1\",\n    \"usuario\": \"/api/usuarios/1\",\n    \"estado\": \"/api/tarea_estados/1\",\n    \"horasTrabajadas\": 4\n}"
+                        },
+                        "url": "{{baseUrl}}/api/tareas"
+                    }
+                },
+                {
+                    "name": "Actualizar Tarea",
+                    "request": {
+                        "method": "PUT",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"titulo\": \"Título Editado\",\n    \"horasTrabajadas\": 8\n}"
+                        },
+                        "url": "{{baseUrl}}/api/tareas/1"
+                    }
+                },
+                {
+                    "name": "Borrar Lógico",
+                    "request": {
+                        "method": "DELETE",
+                        "url": "{{baseUrl}}/api/tareas/1"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "05 Tarea Estados",
+            "item": [
+                {
+                    "name": "Listar Estados",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/tarea_estados"
+                    }
+                },
+                {
+                    "name": "Crear Estado",
+                    "request": {
+                        "method": "POST",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"nombre\": \"Bloqueado\",\n    \"color\": \"ff0000\",\n    \"estado\": true\n}"
+                        },
+                        "url": "{{baseUrl}}/api/tarea_estados"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "06 Tarifas",
+            "item": [
+                {
+                    "name": "Listar Tarifas",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/tarifas"
+                    }
+                },
+                {
+                    "name": "Crear Tarifa",
+                    "request": {
+                        "method": "POST",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"nombre\": \"Sénior\",\n    \"costoHora\": 50,\n    \"estado\": true\n}"
+                        },
+                        "url": "{{baseUrl}}/api/tarifas"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "07 Asignaciones (Usuario Proyectos)",
+            "item": [
+                {
+                    "name": "Listar Asignaciones",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/usuario_proyectos"
+                    }
+                },
+                {
+                    "name": "Filtrar por Proyecto",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/usuario_proyectos?proyecto=1"
+                    }
+                },
+                {
+                    "name": "Crear Asignación",
+                    "request": {
+                        "method": "POST",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"usuario\": \"/api/usuarios/1\",\n    \"proyecto\": \"/api/proyectos/1\",\n    \"tarifa\": \"/api/tarifas/1\",\n    \"rolEnProyecto\": \"Líder Técnico\",\n    \"fechaAsignacion\": \"2024-02-21\",\n    \"estado\": true\n}"
+                        },
+                        "url": "{{baseUrl}}/api/usuario_proyectos"
+                    }
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{token}}",
+                "type": "string"
+            }
+        ]
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:8000",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}

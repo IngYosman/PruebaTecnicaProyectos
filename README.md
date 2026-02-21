@@ -57,7 +57,7 @@ Antes de realizar las entidades genere un MER (Modelo Entidad Relación)
 
 https://www.drawdb.app/editor?shareId=7a95e36ffb6a4b3c3ba015a3ad88de3a
 
-![MER](files/)
+![alt text](files/{E9D62D1E-7DFE-4FEE-954E-585F2D1B2E3E}.png)
 
 Ya credo y diseñado el MER se puede realizar la creacion de las entidades y las migraciones.
 
@@ -110,6 +110,35 @@ El procesador de softdelete se encarga de eliminar logicamente las entidades, en
         new Patch(),
         new Delete(processor: SoftDeleteProcessor::class) # Procesador modificado para borrado lógico
     ]
+)]
+```
+
+despues de esto y avanzando en el desarrollo colocaba Groups para la optencion y edicion de datos dentro de las diferentes vistas de api platoform, normalizando y desnormalizando tipos de datos o fechas dependiendo de la necesidad del frontend.
+
+Un ejemplo de esto es el siguiente donde realizo un parametro de busqueda para usuarios y proyecto y tambien normalizo infirmaicion para tareas de lectura, y desnormalizo la informaicon para escritura, esto se hace por tipos defechas y otros datos.
+
+```php
+#[ApiFilter(SearchFilter::class, properties: ['proyecto' => 'exact', 'usuario' => 'exact'])]
+#[ApiResource(
+    operations: [
+        new GetCollection(normalizationContext: ['groups' => ['tarea:read', 'timestamp:read']]),
+        new Post(
+            normalizationContext: ['groups' => ['tarea:read', 'timestamp:read']],
+            denormalizationContext: ['groups' => ['tarea:write']]
+        ),
+        new Get(normalizationContext: ['groups' => ['tarea:read', 'timestamp:read']]),
+        new Put(
+            normalizationContext: ['groups' => ['tarea:read', 'timestamp:read']],
+            denormalizationContext: ['groups' => ['tarea:write']]
+        ),
+        new Patch(
+            normalizationContext: ['groups' => ['tarea:read', 'timestamp:read']],
+            denormalizationContext: ['groups' => ['tarea:write']]
+        ),
+        new Delete(processor: SoftDeleteProcessor::class)
+    ],
+    normalizationContext: ['groups' => ['tarea:read', 'timestamp:read']],
+    denormalizationContext: ['groups' => ['tarea:write']]
 )]
 ```
 
