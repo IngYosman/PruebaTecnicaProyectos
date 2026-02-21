@@ -3,10 +3,12 @@
 namespace App\Entity\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiProperty;
 
 trait SoftDeleteTrait
 {
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    #[ApiProperty(writable: false)]
     private ?\DateTimeImmutable $deletedAt = null;
 
     public function getDeletedAt(): ?\DateTimeImmutable

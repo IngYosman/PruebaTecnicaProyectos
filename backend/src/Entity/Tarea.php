@@ -7,8 +7,26 @@ use App\Entity\Traits\TimestampableTrait;
 use App\Repository\TareaRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\State\SoftDeleteProcessor;
 
 #[ORM\Entity(repositoryClass: TareaRepository::class)]
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Post(),
+        new Get(),
+        new Put(),
+        new Patch(),
+        new Delete(processor: SoftDeleteProcessor::class)
+    ]
+)]
 class Tarea
 {
     use TimestampableTrait;

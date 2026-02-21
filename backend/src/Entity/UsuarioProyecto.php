@@ -5,8 +5,26 @@ namespace App\Entity;
 use App\Entity\Traits\TimestampableTrait;
 use App\Repository\UsuarioProyectoRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\State\SoftDeleteProcessor;
 
 #[ORM\Entity(repositoryClass: UsuarioProyectoRepository::class)]
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Post(),
+        new Get(),
+        new Put(),
+        new Patch(),
+        new Delete(processor: SoftDeleteProcessor::class)
+    ]
+)]
 class UsuarioProyecto
 {
     use TimestampableTrait;
@@ -35,7 +53,7 @@ class UsuarioProyecto
     private ?\DateTime $fechaAsignacion = null;
 
     #[ORM\Column]
-    private ?bool $activo = null;
+    private ?bool $estado = null;
 
     public function getId(): ?int
     {
@@ -102,14 +120,14 @@ class UsuarioProyecto
         return $this;
     }
 
-    public function isActivo(): ?bool
+    public function isEstado(): ?bool
     {
-        return $this->activo;
+        return $this->estado;
     }
 
-    public function setActivo(bool $activo): static
+    public function setEstado(bool $estado): static
     {
-        $this->activo = $activo;
+        $this->estado = $estado;
 
         return $this;
     }

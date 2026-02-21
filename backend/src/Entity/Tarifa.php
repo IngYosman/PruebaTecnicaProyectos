@@ -8,8 +8,26 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\State\SoftDeleteProcessor;
 
 #[ORM\Entity(repositoryClass: TarifaRepository::class)]
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Post(),
+        new Get(),
+        new Put(),
+        new Patch(),
+        new Delete(processor: SoftDeleteProcessor::class)
+    ]
+)]
 class Tarifa
 {
     use TimestampableTrait;
@@ -32,7 +50,7 @@ class Tarifa
     private ?string $moneda = null;
 
     #[ORM\Column]
-    private ?bool $activa = null;
+    private ?bool $estado = null;
 
     /**
      * @var Collection<int, UsuarioProyecto>
@@ -98,14 +116,14 @@ class Tarifa
         return $this;
     }
 
-    public function isActiva(): ?bool
+    public function isEstado(): ?bool
     {
-        return $this->activa;
+        return $this->estado;
     }
 
-    public function setActiva(bool $activa): static
+    public function setEstado(bool $estado): static
     {
-        $this->activa = $activa;
+        $this->estado = $estado;
 
         return $this;
     }

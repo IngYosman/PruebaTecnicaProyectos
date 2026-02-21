@@ -98,4 +98,67 @@ Ya teniendo las tablas en base de datos ahora se puede realizar el api con API P
 ## 4. Creación APIS CON APIPLATFORM
 Se realiza la implementacion de API SOURSE EN LAS ENTIDADES
 
+El procesador de softdelete se encarga de eliminar logicamente las entidades, entonces se realiza el cambio de que no se elimine el registro de la tabla, sino que se actualice el campo estado a false.
+
+```php
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Post(),
+        new Get(),
+        new Put(),
+        new Patch(),
+        new Delete(processor: SoftDeleteProcessor::class) # Procesador modificado para borrado lógico
+    ]
+)]
+```
+
+## 5. Implementación de un Punto de Login (Autenticación para Usuarios y Administradores)
+
+Para establecer un punto de login seguro dentro de la API Rest y permitir la autenticación y autorización se empleara por JWT.
+
+Instale el paquete encargado de gestionar los tokens JWT:
+
+```bash
+composer require lexik/jwt-authentication-bundle
+php bin/console lexik:jwt:generate-keypair #esto es para generar las claves publica y privada
+```
+
+los tokens se generaron en la carpeta config/jwt/
+
+El enrutamiento y la protección de accesos se configuran en `config/packages/security.yaml`. Es donde realice la configuración de los usuarios y los roles para la aplicacion .
+
+Se parametrizo el endpoint `/api/login_check` en el archivo `config/routes.yaml` para que el sistema utilice este para el login:
+
+```yaml
+# config/routes.yaml
+api_login_check:
+    path: /api/login_check
+```
+con esto nos puede generar un token para poder acceder a las apis protegidas.
+
+Una vez aplicadas estas configuraciones, ya tenemos un punto de acceso plenamente funcional. Enviamos una solicitud `POST` directamente hacia `/api/login_check` con las credenciales correspondientes que se crearon en la base de datos. 
+
+**Petición HTTP:**
+```json
+POST /api/login_check
+Content-Type: application/json
+
+{
+  "email": "[EMAIL_ADDRESS]",
+  "password": "[PASSWORD]"
+}
+```
+
+**Respuesta Exitosa:**
+```json
+{
+    "token": "eyJhbGciOiJSUzI1NiIsInR5cCI..."
+}
+```
+
+Con el token brindado, cualquier cliente deberá añadir este Token a la cabecera HTTP (`Authorization: Bearer <TU_TOKEN>`) para enviar peticiones futuras a las entidades protegidas por API Platform.
+
+
+# Documentación: Creación de Aplicación FRONTEND
 
